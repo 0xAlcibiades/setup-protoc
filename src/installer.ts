@@ -91,6 +91,7 @@ export async function getProtoc(
 
 async function downloadRelease(version: string): Promise<string> {
   // Download
+  process.stdout.write(`Detected platform ${osPlat}, architecture ${osArch}`);
   let fileName: string = getFileName(version, osPlat, osArch);
   let downloadUrl: string = util.format(
     "https://github.com/protocolbuffers/protobuf/releases/download/%s/%s",
