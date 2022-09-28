@@ -28,7 +28,6 @@ import * as exc from "@actions/exec";
 import * as io from "@actions/io";
 
 let osPlat: string = os.platform();
-let osArch: string = os.arch();
 
 interface IProtocRelease {
   tag_name: string;
@@ -38,7 +37,8 @@ interface IProtocRelease {
 export async function getProtoc(
   version: string,
   includePreReleases: boolean,
-  repoToken: string
+  repoToken: string,
+  osArch: string,
 ) {
   // resolve the version number
   const targetVersion = await computeVersion(
@@ -57,7 +57,7 @@ export async function getProtoc(
 
   // if not: download, extract and cache
   if (!toolPath) {
-    toolPath = await downloadRelease(version);
+    toolPath = await downloadRelease(version, osArch);
     process.stdout.write("Protoc cached under " + toolPath + os.EOL);
   }
 
@@ -89,9 +89,8 @@ export async function getProtoc(
   }
 }
 
-async function downloadRelease(version: string): Promise<string> {
+async function downloadRelease(version: string, osArch: string): Promise<string> {
   // Download
-  process.stdout.write(`Detected platform ${osPlat}, architecture ${osArch}`);
   let fileName: string = getFileName(version, osPlat, osArch);
   let downloadUrl: string = util.format(
     "https://github.com/protocolbuffers/protobuf/releases/download/%s/%s",
@@ -118,7 +117,7 @@ async function downloadRelease(version: string): Promise<string> {
 /**
  *
  * @param osArch - A string identifying the operating system platform for which the Node.js binary was compiled.
- * See https://nodejs.org/api/os.html#osplatform for possible values.
+ * See https://nodejs.org/docs/latest-v12.x/api/os.html#os_os_arch for possible values.
  * @returns Suffix for the protoc filename.
  */
 function fileNameSuffix(osArch: string): string {
@@ -146,9 +145,9 @@ function fileNameSuffix(osArch: string): string {
  *
  * @param version - The version to download
  * @param osPlat - The operating system platform for which the Node.js binary was compiled.
- * See https://nodejs.org/api/os.html#osplatform for more.
+ * See https://nodejs.org/docs/latest-v12.x/api/os.html#os_os_platform for more.
  * @param osArch - The operating system CPU architecture for which the Node.js binary was compiled.
- * See https://nodejs.org/api/os.html#osplatform for more.
+ * See https://nodejs.org/docs/latest-v12.x/api/os.html#os_os_arch for more.
  * @returns The filename of the protocol buffer for the given release, platform and architecture.
  *
  */

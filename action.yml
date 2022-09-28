@@ -11,6 +11,9 @@ inputs:
   repo-token:
     description: 'GitHub repo token to use to avoid rate limiter'
     default: ''
+  os-arch:
+    description: 'Target OS architecture to download the protoc for. Defaults to the action runner's architecture.'
+    default: ''
 runs:
   using: 'node12'
   main: 'lib/main.js'
